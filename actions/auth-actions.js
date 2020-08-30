@@ -1,7 +1,7 @@
 const { from, of, Observable } = require("rxjs");
 const { mergeMap, map } = require("rxjs/operators");
 const { USER_MODEL } = require("../reference/models-reference");
-const { JWT_EXPIRATION, JWT_SECRET } = require("../configs/index");
+const { JWT_EXPIRATION, JWT_SECRET, REDIS_URI } = require("../configs/index");
 
 const User = require("../models/User");
 const { upsert$ } = require("../utils/db-model-util");
@@ -11,7 +11,7 @@ const moment = require("moment");
 
 const redis = require("redis");
 const JWTRedis = require("jwt-redis").default;
-const redisClient = redis.createClient();
+const redisClient = redis.createClient(REDIS_URI);
 const jwtr = new JWTRedis(redisClient);
 
 const makeJWT = (user) => {

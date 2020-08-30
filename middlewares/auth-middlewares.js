@@ -1,10 +1,11 @@
 const { UNAUTHORIZED } = require("http-status-codes");
-const { JWT_SECRET } = require("../configs");
-const logger = require("../utils/logger");
+const { JWT_SECRET, REDIS_URI } = require("../configs");
 
+const logger = require("../utils/logger");
 const redis = require("redis");
 const JWTRedis = require("jwt-redis").default;
-const redisClient = redis.createClient();
+
+const redisClient = redis.createClient(REDIS_URI);
 const jwtr = new JWTRedis(redisClient);
 
 const User = require("../models/User");

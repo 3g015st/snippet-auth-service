@@ -1,0 +1,43 @@
+version : '3.6'
+
+services:
+  postgres:
+    image: postgres
+    container_name: "sideline-auth-postgres"
+    environment:
+      POSTGRES_USER: 'admin'
+      POSTGRES_PASSWORD: '1234'
+      POSTGRES_DB: 'sideline'
+      POSTGRES_HOST: 'postgres'
+    ports:
+      - "5432:5432"
+  redis:
+    container_name: "sideline-auth-redis"
+    build: ./redis
+    hostname: redis
+    command: ["redis-server", "--bind", "redis", "--port", "6900"]
+    ports:
+      - "6900:6900"
+    expose:
+      - "6900"
+  sideline-auth-api:
+    container_name: "sideline-auth-api"
+    build: ./
+    command: npm start
+    working_dir : /usr/src/sideline-auth-api
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./:/usr/src/sideline-auth-api
+    links:
+      - postgres
+      - redis
+    environment:
+      DB_USER : 'admin'
+      DB_PASS : '1234'
+      DB_NAME : 'sideline'
+      DB_HOST : 'postgres'
+      DB_ENGINE : 'postgres'
+      REDIS_URI : 'redis://redis:6900'
+      FB_CALLBACK_URL : 'http://sideline-auth-api:4200/api/auth/facebook/callback'
+
